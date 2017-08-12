@@ -21,7 +21,7 @@ Starting with describing the Cherry-picking process using DAG of a repository ha
 
   <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject0.pdf" alt="Cherry-picking applies a commit f in branch 1.3 to other branches 1.1 and 1.2." </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject0.pdf" alt="Cherry-picking applies a commit f in branch 1.3 to other branches 1.1 and 1.2." </td>
     <td>
 <p>
   * b44ea88 (1.2) Added f (cherry picked from db55fd2)<br>
@@ -53,7 +53,7 @@ Starting with describing the Cherry-picking process using DAG of a repository ha
 
   <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject1.pdf" alt="Jetty 9.2.x depends on JDK 1.7, Jetty 9.3.x and 9.4.x depend on JDK 1.8" </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject1.pdf" alt="Jetty 9.2.x depends on JDK 1.7, Jetty 9.3.x and 9.4.x depend on JDK 1.8" </td>
     <td>
       * a419765 (HEAD -> 9.4.x, master)<br>
       * d3731d0 (9.3.x)<br>
@@ -71,7 +71,7 @@ Starting with describing the Cherry-picking process using DAG of a repository ha
   </p>
   <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject2a.pdf" alt="x is committed to release 9.4.x." </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject2a.pdf" alt="x is committed to release 9.4.x." </td>
     <td>
 <p>
   * c8836e1 (HEAD -> 9.4.x) changed deprecated method<br>
@@ -93,7 +93,7 @@ Starting with describing the Cherry-picking process using DAG of a repository ha
   </p>
   <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject2b.pdf" alt="x is manually cherry picked to 9.3.x" </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject2b.pdf" alt="x is manually cherry picked to 9.3.x" </td>
     <td>
 <p>
   $ git cherry-pick c8836e1<br>
@@ -119,7 +119,7 @@ With Tartarian, developers use hashtag as metadata such as #deprecated to indica
 
   <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject2.pdf" alt="Commit x is tagged with #deprecated{JDK,1.8+}" </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject2.pdf" alt="Commit x is tagged with #deprecated{JDK,1.8+}" </td>
     <td>
     <p>
       * c8836e1 (HEAD -> 9.4.x) changed deprecated method x #deprecated{JDK,1.8+}<br>
@@ -144,7 +144,7 @@ Identifying the affected release branches
 
 <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject3.pdf" alt="Tartarian recommends cherry-picking x to branch 9.3.x" </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject3.pdf" alt="Tartarian recommends cherry-picking x to branch 9.3.x" </td>
     <td>
 <p>
   * c8836e1 (9.4.x) change deprecated method<br>
@@ -173,7 +173,7 @@ With this recommendation, developers can make informed decision about the potent
   </p>
   <table style="width:100%">
   <tr>
-    <td><img src="https://github.com/tartarian/tartarian.github.io/blob/master/dot/identifierobject4.pdf" alt="x is cherry picked to 9.3.x" </td>
+    <td><img src="https://tartarian.github.io/dot/identifierobject4.pdf" alt="x is cherry picked to 9.3.x" </td>
     <td>
 <p>
   * 740dbfa (HEAD -> 9.3.x) cherry picked from c8836e1<br>
