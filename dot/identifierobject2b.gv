@@ -1,0 +1,28 @@
+digraph G {
+ ratio=auto; node[fontsize=12];
+ compound=true;
+ subgraph cluster0 {
+ "commit x"
+ }
+ subgraph cluster1 {
+ Jetty[shape=box];
+ Jetty->"9.4.x";
+ Jetty->"9.3.x";
+ Jetty->"9.2.x";
+ {rank=same; "9.2.x","9.3.x","9.4.x"}
+ }
+ subgraph cluster2 {
+ JDK[shape=oval];
+ 1.7[shape=oval];
+ 1.8[shape=oval];
+ JDK->1.7;
+ JDK->1.8;
+ }
+
+ "9.2.x"->1.7;
+ "9.3.x"->1.8;
+ "9.4.x"->1.8;
+
+ "commit x"->"9.4.x"[label="committed to"];
+ "commit x"->"9.3.x"[label="cherry picked to"];
+ }
