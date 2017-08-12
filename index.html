@@ -2,11 +2,192 @@
 <html>
 <body>
 
-<p><b>Cherry-Picking of Code Commits in Long-Running, Multi-release Software </b></p>
-<p>Panuchart Bunyakiati and Chadarat Phipathananunth</p>
+<h1><b>Cherry-Picking of Code Commits in Long-Running, Multi-release Software </b></h1>
+<h2>Panuchart Bunyakiati and Chadarat Phipathananunth</h2>
+
 <p>
-This paper presents Tartarian, a tool that supports maintenance of software with long-running, multi-release branches in distributed version control systems. When new maintenance code, such as bug fixes and code improvement, is committed into a branch, it is likely that such code can be applied or reused with some other branches. To do so, a developer may manually identify a commit and cherry pick it. Tartarian can support this activity by providing commit hashtags, which the developer uses as metadata to specify their intentions when committing the code. With these tags, Tartarian uses dependency graph, that represents the dependency constraints of the branches, and Branch Identifier, which matches the commit hashtags with the dependency graph, to identify the applicable branches for the commits. Using Tartarian, developers may be able to maintain software with multiple releases more efficiently. 
+This paper presents Tartarian, a tool that supports maintenance of software with long-running, multi-release branches in distributed version control systems. When new maintenance code, such as bug fixes and code improvement, is committed into a branch, it is likely that such code can be applied or reused with some other branches. To do so, a developer may manually identify a commit and cherry pick it. Tartarian can support this activity by providing commit hashtags, which the developer uses as metadata to specify their intentions when committing the code. With these tags, Tartarian uses dependency graph, that represents the dependency constraints of the branches, and Branch Identifier, which matches the commit hashtags with the dependency graph, to identify the applicable branches for the commits. Using Tartarian, developers may be able to maintain software with multiple releases more efficiently.
 </p>
+
+<h1>
+Describing Cherry-Picking
+</h1>
+<p>
+Starting with describing the Cherry-picking process using DAG of a repository having three releases 1.1, 1.2 and 1.3
+  where release 1.1 has commit a, release 1.2 has commits a, b and c and release 1.3 has commits a, b, c, d and e.
+  Once the bug fix <em>f</em> is committed to release 1.3, it can be cherry picked to release 1.1 and 1.2
+  hence release 1.1 becomes a and f, release 1.2 becomes a, b, c and f and release 1.3 becomes a, b, c, d, e and f.
+</p>
+
+  <table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject0.pdf" alt="Cherry-picking applies a commit f in branch 1.3 to other branches 1.1 and 1.2." </td>
+    <td>
+<p>
+  * b44ea88 (1.2) Added f (cherry picked from db55fd2)<br>
+  | * 4fcd797 (1.1) Added f (cherry picked from db55fd2)<br>
+  | | * db55fd2 (HEAD -> master, 1.3) Added f<br>
+  | | * 3e63476 Added e<br>
+  | | * f0a729e Added d<br>
+  | |/<br>
+  |/|<br>
+  * | 9981679 Added c<br>
+  * | 01ea7e6 Added b<br>
+  |/<br>
+  * 5597940 Added a<br>
+  Commit f is cherry picked from 1.3 to 1.1 and 1.2.<br>
+</p>
+
+    </td>
+    </tr>
+  </table>
+
+  <h1>
+    Introducing Running Example
+  </h1>
+
+<p>
+  As our running example describes the dependencies of Jetty 9.2.x. 9.3.x and 9.4.x release branches,
+  one of which being the dependencies on JDK1.7 (for Jetty 9.2.x) and JDK1.8 (for Jetty 9.3.x and 9.4.x).
+  </p>
+
+  <table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject1.pdf" alt="Jetty 9.2.x depends on JDK 1.7, Jetty 9.3.x and 9.4.x depend on JDK 1.8" </td>
+    <td>
+      * a419765 (HEAD -> 9.4.x, master)<br>
+      * d3731d0 (9.3.x)<br>
+      * cc6769f (9.2.x)<br>
+      The DAG of the release 9.2.x, 9.3.x and 9.4.x.<br>
+    </td>
+    </tr>
+  </table>
+
+<h1>
+  Committing to a branch
+  </h1>
+<p>
+  Next, we will demonstrate a developer committing to release 9.4.x. The commit <em>x</em> makes changes to the code that depends on JDK1.8. For example, the changes in APIs from using the old method \emph{m.getParameterTypes().length} to using a more efficient method introduced in JDK1.8 \emph{m.getParameterCount()}. This will affect all release branches depending on JDK1.8.
+  </p>
+  <table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject2a.pdf" alt="x is committed to release 9.4.x." </td>
+    <td>
+<p>
+  * c8836e1 (HEAD -> 9.4.x) changed deprecated method<br>
+  * a419765 (master)<br>
+  * d3731d0 (9.3.x)<br>
+  * cc6769f (9.2.x)<br>
+  x is committed to release 9.4.x as commit c8836e1.<br>
+</p>
+    </td>
+    </tr>
+  </table>
+
+  <h1>
+    Without Tartarian
+  </h1>
+
+<p>
+  Without Tartarian, a developer must manually identify the commits that are applicable for code reuse and make a cherry-picking commit. He usually browses through the issues, related commits and the diff between the versions. Then, he makes decision whether to cherry pick and should the commit can be used as-is or must be modified.
+  </p>
+  <table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject2b.pdf" alt="x is manually cherry picked to 9.3.x" </td>
+    <td>
+<p>
+  $ git cherry-pick c8836e1<br>
+  [9.3.x 740dbfa] changed deprecated method<br>
+   Date: Wed Jun 7 18:57:27 2017 +0700<br>
+   1 file changed, 0 insertions(+), 0 deletions(-)<br>
+   create mode 100644 x<br>
+  $<br>
+  x is manually cherry picked to 9.3.x as commit 740dbfa.<br>
+</p>
+    </td>
+    </tr>
+  </table>
+
+<h1>
+  With Tartarian
+  </h1>
+<p>
+With Tartarian, developers use hashtag as metadata such as #deprecated to indicate
+  the purpose of this commit and its dependency which effect other release branches.
+  <em>$git tcommit -m "changed deprecated method 132215 #deprecated{JDK, 1.8+}"</em>
+  </p>
+
+  <table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject2.pdf" alt="Commit x is tagged with #deprecated{JDK,1.8+}" </td>
+    <td>
+    <p>
+      * c8836e1 (HEAD -> 9.4.x) changed deprecated method x #deprecated{JDK,1.8+}<br>
+      * a419765 (master)<br>
+      * d3731d0 (9.3.x)<br>
+      * cc6769f (9.2.x)<br>
+      A commit message of x with the #deprecated{JDK,1.8}.<br>
+    </p>
+    </td>
+    </tr>
+  </table>
+
+<h1>
+Identifying the affected release branches
+</h1>
+
+<p>Tartarian uses hast tags as constraints on the dependency graph to identify the affected release branches.
+  After a code change is committed to the repository, the Branch Identifier searches through the graph to identify the affected releases. Developers can read the recommendation Tartarian made by using: \\
+  <em>$git tcommit -r</em>
+</p>
+
+
+<table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject3.pdf" alt="Tartarian recommends cherry-picking x to branch 9.3.x" </td>
+    <td>
+<p>
+  * c8836e1 (9.4.x) change deprecated method<br>
+  * a419765 (master)<br>
+  * d3731d0 (HEAD -> 9.3.x)<br>
+  * cc6769f (9.2.x)<br>
+  $ git tcommit -r<br>
+  [9.4.x c8836e1] change deprecated method<br>
+   Date: Wed Jun 7 18:55:17 2017 +0700<br>
+   Priority: Low<br>
+   c8836e1 is applicable to branch 9.3.x because<br>
+   it is likely to depend on JDK1.8<br>
+  $<br>
+  Developers use git tcommit -r to read the recommendation Tartarian made.<br>
+</p>
+
+    </td>
+    </tr>
+  </table>
+
+  <h1>
+Making decision to cherry pick
+  </h1>
+<p>
+With this recommendation, developers can make informed decision about the potential commits to be cherry picked and can reuse code more efficiently.
+  </p>
+  <table style="width:100%">
+  <tr>
+    <td><img src="dot/identifierobject4.pdf" alt="x is cherry picked to 9.3.x" </td>
+    <td>
+<p>
+  * 740dbfa (HEAD -> 9.3.x) cherry picked from c8836e1<br>
+  | * c8836e1 (9.4.x) changed deprecated method<br>
+  | * a419765 (master)<br>
+  |/<br>
+  * d3731d0<br>
+  * cc6769f (9.2.x)<br>
+  x is cherry picked to 9.3.x as shown in the DAG as commit 740dbfa.<br>
+</p>
+
+    </td>
+    </tr>
+  </table>
 
 </body>
 </html>
