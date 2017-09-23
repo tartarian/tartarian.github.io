@@ -9,6 +9,10 @@
 This paper presents Tartarian, a tool that supports maintenance of software with long-running, multi-release branches in distributed version control systems. When new maintenance code, such as bug fixes and code improvement, is committed into a branch, it is likely that such code can be applied or reused with some other branches. To do so, a developer may manually identify a commit and cherry pick it. Tartarian can support this activity by providing commit hashtags, which the developer uses as metadata to specify their intentions when committing the code. With these tags, Tartarian uses dependency graph, that represents the dependency constraints of the branches, and Branch Identifier, which matches the commit hashtags with the dependency graph, to identify the applicable branches for the commits. Using Tartarian, developers may be able to maintain software with multiple releases more efficiently.
 </p>
 
+<p>
+A presentation of Tartarian is available <a href="https://github.com/tartarian/demo/blob/master/tartarian-fse2017-slide.pdf">here</a>.
+</p>
+
 <h1>
 Describing Cherry-Picking
 </h1>
@@ -67,7 +71,7 @@ Starting with describing the Cherry-picking process using DAG of a repository ha
   Committing to a branch
   </h1>
 <p>
-  Next, we will demonstrate a developer committing to release 9.4.x. The commit <em>x</em> makes changes to the code that depends on JDK1.8. For example, the changes in APIs from using the old method \emph{m.getParameterTypes().length} to using a more efficient method introduced in JDK1.8 \emph{m.getParameterCount()}. This will affect all release branches depending on JDK1.8.
+  Next, we will demonstrate a developer committing to release 9.4.x. The commit <em>x</em> makes changes to the code that depends on JDK1.8. For example, the changes in APIs from using the old method \emph{m.getParameterTypes().length} to using a more efficient method introduced in JDK1.8, m.getParameterCount(). This will affect all release branches depending on JDK1.8.
   </p>
   <table style="width:100%">
   <tr>
@@ -137,7 +141,7 @@ Identifying the affected release branches
 </h1>
 
 <p>Tartarian uses hast tags as constraints on the dependency graph to identify the affected release branches.
-  After a code change is committed to the repository, the Branch Identifier searches through the graph to identify the affected releases. Developers can read the recommendation Tartarian made by using: \\
+  After a code change is committed to the repository, the Branch Identifier searches through the graph to identify the affected releases. Developers can read the recommendation Tartarian made by using: 
   <em>$git tcommit -r</em>
 </p>
 
